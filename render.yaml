@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: linkpulse
+    runtime: python
+    plan: free
+    region: singapore
+    repo: https://github.com/morphic711/Link-Pulse.git
+    branch: main
+    autoDeployTrigger: commit
+    buildCommand: pip install -r requirements.txt
+    startCommand: 'gunicorn --bind 0.0.0.0:${PORT:-10000} app:app'
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: SESSION_COOKIE_SECURE
+        value: "true"

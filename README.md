@@ -46,3 +46,7 @@ The command prompts for the email and a hidden password. Admin passwords must be
 The app reads `DATABASE_URL` and `SECRET_KEY` from the environment. Set `SESSION_COOKIE_SECURE=true` when serving over HTTPS. Never commit `.env` or paste its values into chat.
 
 For a Linux host, the included `Procfile` starts the app with Gunicorn. Configure `DATABASE_URL`, `SECRET_KEY`, and `SESSION_COOKIE_SECURE=true` in the hosting provider's private environment settings. The host must be able to reach the Supabase Postgres endpoint.
+
+## Deploy on Render
+
+The root `render.yaml` defines a Free web service in Singapore, uses the `main` branch, and deploys new commits automatically. Create a Render Blueprint from this repository. During the initial setup, enter the Supabase Postgres connection string only in Render's private prompt for `DATABASE_URL`; Render generates `SECRET_KEY` and enables secure session cookies.
