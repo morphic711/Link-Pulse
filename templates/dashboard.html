@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Your workspace · LinkPulse{% endblock %}
+{% block content %}
+<section class="workspace-page" aria-labelledby="page-title">
+  <div class="workspace-heading">
+    <div>
+      <p class="eyebrow"><span class="eyebrow-dot"></span> YOUR CAMPAIGN DESK <span class="eyebrow-rule"></span> WORKSPACE</p>
+      <h1 id="page-title">Good to have you, <em>{{ user.email.split('@')[0] }}</em>.</h1>
+      <p class="intro-copy">Create and keep your campaign links together in one place.</p>
+    </div>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="quiet-button" type="submit">Sign out <span aria-hidden="true">↗</span></button>
+    </form>
+  </div>
+
+  <div class="redirect-note"><span class="eyebrow-dot"></span><p>Open any short address to redirect to its destination. Visits are recorded with a privacy-preserving IP hash.</p></div>
+
+  <section class="link-builder" aria-labelledby="builder-title">
+    <div class="builder-intro">
+      <p class="eyebrow">LINK WORKBENCH <span class="eyebrow-rule"></span> 01</p>
+      <h2 id="builder-title">Make a link<br><em>ready to share.</em></h2>
+      <p>Give your destination a short address. Use a custom code or let LinkPulse make one.</p>
+      <div class="builder-index"><span>01</span><span>DESTINATION IN<br>SHORT LINK OUT</span></div>
+    </div>
+
+    <form class="link-form" method="post" action="{{ url_for('create_link') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label for="destination-url">Destination URL</label>
+      <input id="destination-url" name="destination_url" type="url" maxlength="2048" placeholder="https://your-site.com/campaign" required>
+      <p class="field-hint">Use the full web address, including https://</p>
+
+      <label for="short-code">Custom code <span class="optional-label">OPTIONAL</span></label>
+      <div class="code-input-wrap"><span>{{ request.host }}/</span><input id="short-code" name="short_code" type="text" maxlength="32" pattern="[A-Za-z0-9_-]{1,32}" placeholder="spring-launch" autocomplete="off" aria-describedby="code-hint"></div>
+      <p class="field-hint" id="code-hint">1–32 letters, numbers, hyphens, or underscores. Leave blank to generate one.</p>
+
+      <button class="primary-button" type="submit">Create short link <span aria-hidden="true">↗</span></button>
+    </form>
+  </section>
+
+  <section class="links-section" aria-labelledby="links-title">
+    <div class="list-heading">
+      <div>
+        <p class="eyebrow">YOUR LINKS <span class="eyebrow-rule"></span> LINK REGISTER</p>
+        <h2 id="links-title">Campaign links <span class="item-count">{{ links|length }}</span></h2>
+      </div>
+      <span class="list-note">NEWEST FIRST</span>
+    </div>
+
+    {% if links %}
+      <div class="link-table-wrap">
+        <table class="link-table">
+          <thead><tr><th>SHORT ADDRESS</th><th>DESTINATION</th><th>CREATED</th><th>VISITS</th><th>REPORT</th></tr></thead>
+          <tbody>
+            {% for link in links %}
+              <tr>
+                <td><a class="short-address" href="{{ url_for('redirect_short_link', short_code=link.short_code) }}"><span>{{ request.host }}/</span><code>{{ link.short_code }}</code></a><span class="entry-state">ACTIVE · HTTP 302</span></td>
+                <td><a class="destination-link" href="{{ link.destination_url }}" target="_blank" rel="noopener noreferrer" title="Open destination in a new tab">{{ link.destination_url }}</a></td>
+                <td class="date-cell">{{ link.created_at.strftime('%b %d, %Y') if link.created_at else 'Just now' }}</td>
+                <td class="visits-cell">{{ link.click_count }}</td>
+                <td><a class="report-link" href="{{ url_for('link_analytics', link_id=link.id) }}">View report <span aria-hidden="true">↗</span></a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="links-empty">
+        <div class="empty-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p>No campaign links yet. Add a destination above to start your register.</p>
+      </div>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

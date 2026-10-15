@@ -1,1 +1,46 @@
-# Link-Pulse
+# LinkPulse
+
+LinkPulse is a Flask URL shortener and campaign-link analytics app backed by Supabase Postgres.
+
+## Run locally on Windows
+
+1. Install Python 3.14.
+2. Create and activate a virtual environment, then install dependencies:
+
+   ```powershell
+   py -3.14 -m venv .venv
+   .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+   ```
+
+3. Copy `.env.example` to `.env`. Set `DATABASE_URL` to your Supabase Postgres connection string and replace `SECRET_KEY` with a private random value. Keep `.env` private.
+4. Start the local server:
+
+   ```powershell
+   .\.venv\Scripts\python.exe app.py
+   ```
+
+5. Open `http://127.0.0.1:5000/register` to create an account.
+
+The Supabase project must already have the LinkPulse tables (`app_users`, `links`, and `click_events`).
+
+## Admin account
+
+Create an admin account from the project directory:
+
+```powershell
+.\.venv\Scripts\flask.exe --app app seed-admin
+```
+
+The command prompts for the email and a hidden password. Admin passwords must be 12–128 characters.
+
+## Main routes
+
+- `/register` and `/login` — account access
+- `/dashboard` — create and manage short links
+- `/<short_code>` — redirect and record a visit
+- `/links/<link_id>/analytics` — per-link activity report
+- `/health/database` — database connection status
+
+## Configuration
+
+The app reads `DATABASE_URL` and `SECRET_KEY` from the environment. Set `SESSION_COOKIE_SECURE=true` when serving over HTTPS. Never commit `.env` or paste its values into chat.

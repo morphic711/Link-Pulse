@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f4f0">
+  <title>{% block title %}LinkPulse{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="{{ url_for('home') }}" aria-label="LinkPulse home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Link<span class="wordmark-light">Pulse</span></span>
+    </a>
+    <span class="topbar-note">LINK MANAGEMENT <span aria-hidden="true">/</span> ANALYTICS</span>
+    <span class="topbar-index">LP&nbsp; / &nbsp;01</span>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-stack" role="status" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">
+            <p>{{ message }}</p>
+            <button class="flash-close" type="button" aria-label="Dismiss message">×</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <span>LINKPULSE</span>
+    <span>Make every campaign link count.</span>
+  </footer>
+  <script>
+    // Let people read each message, then remove it without a page refresh.
+    document.querySelectorAll(".flash").forEach((message) => {
+      const timer = window.setTimeout(dismiss, 5000);
+
+      function dismiss() {
+        message.classList.add("flash-hiding");
+        window.setTimeout(() => message.remove(), 250);
+      }
+
+      message.querySelector(".flash-close").addEventListener("click", () => {
+        window.clearTimeout(timer);
+        dismiss();
+      });
+    });
+  </script>
+</body>
+</html>
