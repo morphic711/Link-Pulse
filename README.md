@@ -33,6 +33,16 @@ Create an admin account from the project directory:
 
 The command prompts for the email and a hidden password. Admin passwords must be 12–128 characters.
 
+## Sample demo data
+
+After creating the account that should own the examples, add three sample links and 16 sample visits:
+
+```powershell
+.\.venv\Scripts\flask.exe --app app seed-demo
+```
+
+The command prompts for that account's email. It creates `demo-event`, `demo-launch`, and `demo-signup` links with example.com destinations and synthetic click details. It does not create users or campaigns. Run it only once; it stops without changes if any sample short code already exists.
+
 ## Main routes
 
 - `/register` and `/login` — account access
